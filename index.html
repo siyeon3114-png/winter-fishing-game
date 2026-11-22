@@ -192,7 +192,7 @@ const winterSongs={
  lake:[[[48,55,64],[64,null,67,null,72,74,72,null]],[[43,50,57],[71,null,69,null,67,69,62,null]],[[45,52,60],[64,67,69,null,72,null,69,67]],[[41,48,57],[65,null,69,72,74,null,72,null]],[[48,55,64],[76,null,74,72,67,null,64,null]],[[43,50,59],[62,67,71,null,69,67,62,null]],[[41,48,57],[65,null,67,69,72,null,69,null]],[[43,50,59],[67,64,62,null,59,null,62,null]]],
  results:[[[48,55,64],[67,72,76,null,79,null,76,74]],[[41,48,57],[72,null,69,72,77,null,76,72]],[[45,52,60],[76,74,72,69,72,null,76,null]],[[43,50,59],[74,71,67,null,71,null,74,null]],[[48,55,64],[76,79,84,null,79,null,76,72]],[[41,48,57],[77,null,76,72,69,null,72,74]],[[43,50,59],[71,74,79,null,77,74,71,null]],[[48,55,64],[72,null,null,67,72,null,null,null]]]
 };
-let audio=null,master=null,bgmBus=null,fxBus=null,stepBus=null,snowBuffer=null,muted=true,soundBusy=false,musicTimer=0,musicHead=0,musicLayers=[],musicScene='',snowTravel=0,snowMoving=false,snowAudible=false;
+let audio=null,master=null,bgmBus=null,fxBus=null,stepBus=null,snowBuffer=null,muted=false,soundBusy=false,musicTimer=0,musicHead=0,musicLayers=[],musicScene='',snowTravel=0,snowMoving=false,snowAudible=false;
 function soundRead(key,def){try{const v=localStorage.getItem('winterSound:'+key);return v===null?def:clamp(Number(v)||0,0,100);}catch{return def;}}
 function soundWrite(key,v){try{localStorage.setItem('winterSound:'+key,v);}catch{}}
 const bgmSlider=$('bgmLevel'),fxSlider=$('fxLevel');bgmSlider.value=soundRead('bgm',62);fxSlider.value=soundRead('fx',75);
@@ -241,6 +241,7 @@ function winterMusicTick(){if(muted||document.hidden||audio.state!=='running')re
  }musicHead+=.285;}}
 function stopWinterMusic(){clearInterval(musicTimer);musicTimer=0;for(const l of musicLayers)l.bus.disconnect();musicLayers=[];musicScene='';}
 function wakeWinter(){if(document.hidden||muted||!audio||audio.state!=='running')return;soundGlide(master.gain,.72);if(!musicTimer){musicHead=audio.currentTime+.038;setWinterMusic(mode);winterMusicTick();musicTimer=setInterval(winterMusicTick,42);}}
+function requestWinterAudio(){try{if(!audio)initWinterAudio();muted=false;$('sound').textContent='소리 끄기';$('sound').setAttribute('aria-pressed','true');const resumed=audio.resume();if(resumed&&typeof resumed.then==='function')resumed.then(()=>{if(!muted)wakeWinter();}).catch(()=>{});if(audio.state==='running')wakeWinter();}catch{}}
 $('sound').onclick=async()=>{if(soundBusy)return;soundBusy=true;try{if(!audio)initWinterAudio();if(muted){await audio.resume();if(audio.state!=='running')throw Error();muted=false;wakeWinter();}else{muted=true;soundGlide(master.gain,0,.012);stopWinterMusic();quietSnow();}$('sound').textContent=muted?'소리 켜기':'소리 끄기';$('sound').setAttribute('aria-pressed',String(!muted));}catch{showToast('이 기기에서는 소리를 켜지 못했어요.',2300);}finally{soundBusy=false;}};
 $('audioOptions').onclick=()=>{if(!$('audioDialog').open){resetInput();$('audioStatus').textContent='';$('audioDialog').showModal();}};$('audioClose').onclick=()=>$('audioDialog').close();
 async function previewWinterSound(type,message){
@@ -253,7 +254,7 @@ async function previewWinterSound(type,message){
 $('audioSample').onclick=()=>previewWinterSound('bite','톡톡! 이 소리가 나면 물고기가 왔어요.');
 $('flapSample').onclick=()=>previewWinterSound('flap','파닥파닥! 물고기를 들어 올릴 때 나는 소리예요.');
 document.addEventListener('visibilitychange',()=>{if(!audio)return;if(document.hidden){soundGlide(master.gain,0,.015);stopWinterMusic();quietSnow();}else if(!muted){audio.resume().then(wakeWinter).catch(()=>{});}});
-document.addEventListener('pointerdown',()=>{if(audio&&!muted&&audio.state!=='running')audio.resume().then(wakeWinter).catch(()=>{});},true);
+document.addEventListener('pointerdown',()=>{if(!audio||audio.state!=='running')requestWinterAudio();else if(!muted)wakeWinter();},true);
 function decorateCatch(kind){const f=fish[kind], tint=['#63a6a2','#d87d66','#8c79ab'][kind], t=$('toast');
  t.innerHTML=`<div class="catchKicker">오늘의 낚시 기록</div><svg class="catchFish" viewBox="0 0 120 62" aria-hidden="true"><path d="M89 28 112 13 108 31 112 49 88 35" fill="${tint}" stroke="#514334" stroke-width="2.4" stroke-linejoin="round"/><path d="M44 19 65 7 74 21M51 40 64 53 75 39" fill="${tint}" stroke="#514334" stroke-width="2.1"/><path d="M11 31C19 9 65 10 95 31 70 54 25 51 11 31Z" fill="${tint}" stroke="#514334" stroke-width="2.5"/><path d="M15 33Q53 41 90 32 62 52 24 40Z" fill="#fff2bf" opacity=".86"/><path d="M38 22Q46 30 39 39M56 25l5 2m7 1 5 3" stroke="#4d5143" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="25" cy="28" r="4" fill="#fff8d7"/><circle cx="24" cy="28" r="2.5" fill="#342b22"/></svg><strong>${f.name}를 잡았어요!</strong><span class="catchScore">★ +${f.points}점</span>`;
 }
@@ -676,7 +677,7 @@ function updateUI(redraw=false){$('badge').textContent=phaseLabel();$('settings'
  if(mode==='menu')drawMenu();if(mode==='lobby'&&room)drawLobby();if(mode==='results'&&room)drawResults();if(mode==='maze')updateInventory();if(mode==='fishing'){fishUI='';paintFishing();}updateRanks();updateRoundStatus();}
 setInterval(()=>{if(!room)return;if(mode==='maze'||mode==='fishing'||mode==='watch')updateRanks();},1500);
 
-home();requestAnimationFrame(animation);start3D();
+home();requestWinterAudio();requestAnimationFrame(animation);start3D();
 </script>
 </body>
 </html>
