@@ -63,7 +63,7 @@ button.primary,#fishAct{color:#fff3cb;font-weight:900;-webkit-text-stroke:1.8px 
 <div id="app">
 <header id="top"><span id="badge" class="pill">겨울 숲 낚시 축제</span><div class="top-actions"><button id="sound" class="interactive" aria-pressed="false">소리 켜기</button><button id="audioOptions" class="interactive" aria-haspopup="dialog">음량</button><button id="settings" class="interactive">연결 설정</button><button id="leave" class="interactive" hidden>나가기</button></div></header>
 <main id="screen"><section id="card" class="card" aria-label="게임 메뉴"></section></main>
-<div id="guide" class="instructions" hidden><b>겨울 성 탐험 · 난이도 5/10</b><div id="inventory" aria-label="준비물"></div><button id="restartMaze" type="button">처음으로 돌아가기</button><small id="mazeHint">↑↓ 또는 W/S로 걷고, ←→ 또는 A/D로 돌아요.</small></div>
+<div id="guide" class="instructions" hidden><div id="inventory" aria-label="준비물"></div><small id="mazeHint">↑↓ 또는 W/S로 걷고, ←→ 또는 A/D로 돌아요.</small></div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <div id="move" class="interactive" hidden aria-label="미로 이동"><button data-move="left" aria-label="왼쪽으로 돌기"><b>↶</b><span>왼쪽 돌기</span></button><button data-move="forward" aria-label="앞으로 걷기"><b>↑</b><span>앞으로</span></button><button data-move="back" aria-label="뒤로 걷기"><b>↓</b><span>뒤로</span></button><button data-move="right" aria-label="오른쪽으로 돌기"><b>↷</b><span>오른쪽 돌기</span></button></div>
 <section id="fishing" class="interactive" aria-label="낚시 조작" hidden><p id="fishHint">얼음 구멍을 골라요</p><div id="holeButtons" aria-label="얼음 구멍"></div><div id="meter" role="img" aria-label="움직이는 표시가 초록 칸에 올 때 당겨요" hidden><div class="yellow"></div><div class="green">초록 칸</div><div id="needle"></div></div><button id="fishAct" class="primary">낚싯대 던지기</button></section>
@@ -175,7 +175,7 @@ SIL OPEN FONT LICENSE
 'use strict';
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), mix=(a,b,t)=>a+(b-a)*t, TAU=Math.PI*2;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const fish=[{name:'빙어',points:1,color:0x70ccdc,g:.103,y:.23,time:1370},{name:'송어',points:5,color:0xefa180,g:.079,y:.19,time:1190},{name:'산천어',points:10,color:0xa586d8,g:.060,y:.155,time:1070}];
+const fish=[{name:'빙어',points:1,color:0x70ccdc,g:.15,y:.28,time:1580},{name:'송어',points:5,color:0xefa180,g:.115,y:.24,time:1370},{name:'산천어',points:10,color:0xa586d8,g:.09,y:.20,time:1230}];
 const items=['낚싯대','지렁이 미끼','물고기 통'];
 const colors=[['산호색','#e76e77'],['하늘색','#5c9fdb'],['민트색','#48a891'],['보라색','#9a79c6'],['노란색','#e5a846'],['분홍색','#d784b0']];
 const aliases=['눈토끼','꼬마펭귄','아기북극곰','포근여우','달빛물범','별빛수달','눈꽃다람쥐','반짝부엉이','겨울고슴도치','하늘사슴','솜털오리','산타너구리'];
@@ -675,7 +675,7 @@ function updateResults(){if(mode!=='results'||!$('myResult'))return;const p=visu
 function updateUI(redraw=false){$('badge').textContent=phaseLabel();$('settings').hidden=!!room;$('leave').hidden=!room;$('screen').hidden=!['menu','lobby','results'].includes(mode);$('guide').hidden=mode!=='maze';$('move').hidden=mode!=='maze'&&mode!=='fishing';$('move').querySelectorAll('button').forEach(b=>{const label=b.querySelector('span');if(label){if(!label.dataset.maze)label.dataset.maze=label.textContent;label.textContent=mode==='fishing'?{left:'왼쪽',right:'오른쪽',forward:'앞으로',back:'뒤로'}[b.dataset.move]:label.dataset.maze;}});$('fishing').hidden=mode!=='fishing';$('rank').hidden=!['fishing','watch'].includes(mode)||!!room?.solo;$('teacher').hidden=!room||!isHost()||!['maze','fishing','watch'].includes(mode);rankVisibility();teacherVisibility();if(!redraw)return;
  if(mode==='menu')drawMenu();if(mode==='lobby'&&room)drawLobby();if(mode==='results'&&room)drawResults();if(mode==='maze')updateInventory();if(mode==='fishing'){fishUI='';paintFishing();}updateRanks();updateRoundStatus();}
 setInterval(()=>{if(!room)return;if(mode==='maze'||mode==='fishing'||mode==='watch')updateRanks();},1500);
-$('restartMaze').addEventListener('click',()=>{if(mode!=='maze')return;resetInput();quietSnow();snowTravel=0;resetMaze();$('restartMaze').blur();showToast('성 입구로 돌아왔어요. 준비물부터 다시 찾아봐요!',2350);});
+
 home();requestAnimationFrame(animation);start3D();
 </script>
 </body>
