@@ -575,17 +575,22 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
   if(podiumWinner){
    // Fortnite TAKE THE L: RIGHT hand's L is pressed to forehead; left hand rests at waist.
    // Alternate outward kicks and side-to-side hops while the forehead gesture stays in place.
-   const kick=Math.sin(beat*2.15), sway=Math.sin(beat*2.15);
-   a.body.position.y=.045+Math.abs(kick)*.095;
-   a.body.rotation.x=.015;a.body.rotation.z=sway*.085;
-   a.arm.position.set(.20,1.10,-.30);a.arm.rotation.x=0;a.arm.rotation.z=Math.PI+sway*.035; // hand is raised directly to forehead; fingers remain upright
-   a.other.position.set(-.32,.76,-.03);a.other.rotation.x=.04;a.other.rotation.z=-.18+sway*.08; // left hand low at waist
-   a.head.rotation.z=0;
-   a.legs[0].rotation.x=Math.max(0,kick)*.96-.08;
-   a.legs[1].rotation.x=Math.max(0,-kick)*.96-.08;
-   a.legs[0].rotation.z=.23+Math.max(0,kick)*.18;
-   a.legs[1].rotation.z=-.23-Math.max(0,-kick)*.18;
-   a.root.rotation.y=Math.PI+sway*.07;
+   // Match the reference: L hand pressed to forehead, other hand on hip,
+   // one leg planted while the opposite leg kicks out sideways; alternate rhythmically.
+   const kick=Math.sin(beat*1.65), sway=Math.sin(beat*1.65), phase=Math.cos(beat*1.65);
+   a.body.position.y=.035+Math.abs(kick)*.085;
+   a.body.rotation.x=.015;a.body.rotation.z=-sway*.13;
+   // Keep right arm attached at shoulder and angle it up/in toward forehead.
+   a.arm.position.set(.32,.77,-.10);a.arm.rotation.x=-.10;a.arm.rotation.z=2.48+sway*.025;
+   a.other.position.set(-.30,.68,-.12);a.other.rotation.x=-.05;a.other.rotation.z=-1.10+sway*.04;
+   a.head.rotation.z=-sway*.035;
+   // Alternate a high side kick and a small supporting-leg hop; lateral foot spread is visible.
+   a.legs[0].rotation.x=.10+Math.max(0,kick)*.48;
+   a.legs[1].rotation.x=.10+Math.max(0,-kick)*.48;
+   a.legs[0].rotation.z=.12+Math.max(0,kick)*.72;
+   a.legs[1].rotation.z=-.12-Math.max(0,-kick)*.72;
+   a.root.position.x=podium[0]+sway*.045;
+   a.root.rotation.y=Math.PI+sway*.035;
   }else{
    a.arm.position.set(.32,.76,-.03);a.other.position.set(-.32,.76,-.03);
    // BAD challenge: pronounced shoulder hits, crossed punches and alternating side steps.
