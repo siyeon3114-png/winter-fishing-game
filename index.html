@@ -578,8 +578,8 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
    const kick=Math.sin(beat*2.15), sway=Math.sin(beat*2.15);
    a.body.position.y=.045+Math.abs(kick)*.095;
    a.body.rotation.x=.015;a.body.rotation.z=sway*.085;
-   a.arm.rotation.x=-.08;a.arm.rotation.z=1.48+sway*.055; // right arm up/in toward forehead
-   a.other.rotation.x=.04;a.other.rotation.z=-.18+sway*.08; // left hand low at hip
+   a.arm.position.set(.20,1.10,-.30);a.arm.rotation.x=0;a.arm.rotation.z=Math.PI+sway*.035; // hand is raised directly to forehead; fingers remain upright
+   a.other.position.set(-.32,.76,-.03);a.other.rotation.x=.04;a.other.rotation.z=-.18+sway*.08; // left hand low at waist
    a.head.rotation.z=0;
    a.legs[0].rotation.x=Math.max(0,kick)*.96-.08;
    a.legs[1].rotation.x=Math.max(0,-kick)*.96-.08;
@@ -587,6 +587,7 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
    a.legs[1].rotation.z=-.23-Math.max(0,-kick)*.18;
    a.root.rotation.y=Math.PI+sway*.07;
   }else{
+   a.arm.position.set(.32,.76,-.03);a.other.position.set(-.32,.76,-.03);
    // BAD challenge: pronounced shoulder hits, crossed punches and alternating side steps.
    const punch=Math.sin(beat*2.15), kick=Math.sin(beat*1.35);
    a.body.position.y=.035+Math.max(0,Math.sin(beat*2.15))*.13;
