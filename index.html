@@ -532,10 +532,10 @@ function skeleton(slot=0){const root=group(), body=group(root), arm=group(body,.
    part(a,'softBall','coat',0,-.075,-.015,.112,.167,.112);
    part(a,'softBall','fur',0,-.179,-.031,.104,.050,.105);
    part(a,'softBall','leather',0,-.229,-.041,.094,.087,.091);
-   // mitten hand + clearly separated index finger and thumb, so the L pose reads at a glance
-   part(a,'softBall','leather',0,-.292,-.052,.105,.092,.092);
-   part(a,'softBall','leather',0,-.365,-.052,.042,.125,.045,0,0,.02);
-   part(a,'softBall','leather',-.077,-.292,-.072,.105,.042,.045,0,0,-.34);
+     // Mitten palm plus clearly separated upright index and sideways thumb (L silhouette).
+   part(a,'softBall','leather',0,-.292,-.052,.092,.088,.094);
+   part(a,'softBall','leather',0,-.355,-.052,.034,.118,.040);
+   part(a,'softBall','leather',.066,-.292,-.071,.105,.036,.042,0,0,.34);
    part(a,'sphere','leather',-.068,-.221,-.09,.041,.045,.050);
  }
  for(const l of legs){
@@ -573,19 +573,19 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
  if(podium){
   const beat=danceBeat, side=Math.sin(beat);
   if(podiumWinner){
-   // TAKE THE L: both mitten hands visibly form an L (index + thumb), raised beside the head.
-   // Large arm swings alternate while the L-shaped fingers stay readable from the results camera.
-   const pose=Math.sin(beat*1.15), kick=Math.sin(beat*1.65);
-   a.body.position.y=.04+Math.abs(kick)*.10;
-   a.body.rotation.x=-.06+Math.sin(beat*2)*.045;a.body.rotation.z=Math.sin(beat)*.10;
-   a.arm.rotation.x=-.42+pose*.10;a.arm.rotation.z=-2.48+pose*.23;
-   a.other.rotation.x=-.42-pose*.10;a.other.rotation.z=2.48-pose*.23;
-   a.head.rotation.z=-.10+Math.sin(beat*1.15)*.10;
-   a.legs[0].rotation.x=Math.max(0,kick)*1.05-.12;
-   a.legs[1].rotation.x=Math.max(0,-kick)*1.05-.12;
-   a.legs[0].rotation.z=.20+Math.max(0,kick)*.22;
-   a.legs[1].rotation.z=-.20-Math.max(0,-kick)*.22;
-   a.root.rotation.y=Math.PI+Math.sin(beat)*.08;
+   // Fortnite TAKE THE L: RIGHT hand's L is pressed to forehead; left hand rests at waist.
+   // Alternate outward kicks and side-to-side hops while the forehead gesture stays in place.
+   const kick=Math.sin(beat*2.15), sway=Math.sin(beat*2.15);
+   a.body.position.y=.045+Math.abs(kick)*.095;
+   a.body.rotation.x=.015;a.body.rotation.z=sway*.085;
+   a.arm.rotation.x=-.08;a.arm.rotation.z=1.48+sway*.055; // right arm up/in toward forehead
+   a.other.rotation.x=.04;a.other.rotation.z=-.18+sway*.08; // left hand low at hip
+   a.head.rotation.z=0;
+   a.legs[0].rotation.x=Math.max(0,kick)*.96-.08;
+   a.legs[1].rotation.x=Math.max(0,-kick)*.96-.08;
+   a.legs[0].rotation.z=.23+Math.max(0,kick)*.18;
+   a.legs[1].rotation.z=-.23-Math.max(0,-kick)*.18;
+   a.root.rotation.y=Math.PI+sway*.07;
   }else{
    // BAD challenge: pronounced shoulder hits, crossed punches and alternating side steps.
    const punch=Math.sin(beat*2.15), kick=Math.sin(beat*1.35);
