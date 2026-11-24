@@ -567,28 +567,30 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
  if(action==='win'&&age<1220){a.arm.rotation.x=-2.15;a.other.rotation.x=-2.48;a.other.rotation.z=-.42;}if(action==='lose'&&age<800)a.arm.rotation.x=-1.03+Math.sin(age*.017)*.15;
  a.legs[0].rotation.x=jump*.57+gaitWave*.58;a.legs[1].rotation.x=-jump*.69-gaitWave*.58;if(action==='idle'){a.arm.rotation.x+=gaitWave*.22;a.other.rotation.x-=gaitWave*.60;}
  if(podium){
-  const beat=danceBeat, s=Math.sin(beat), c=Math.cos(beat), pulse=Math.sin(beat*2);
+  const beat=danceBeat, side=Math.sin(beat), snap=Math.sin(beat*2.4);
   if(podiumWinner){
-   // Take the L: forehead gesture + alternating knee kicks and side bounce.
-   const phase=danceCycle, lift=Math.sin(beat*1.5), switcher=Math.sin(beat*1.5);
-   a.body.position.y=.25+Math.abs(lift)*.23;
-   a.body.rotation.x=.08+Math.sin(beat*2)*.10;a.body.rotation.z=Math.sin(beat)*.17;
-   a.arm.rotation.x=-2.22+Math.sin(beat)*.20;a.arm.rotation.z=.62+Math.sin(beat*1.5)*.18;
-   a.other.rotation.x=-2.05-Math.sin(beat)*.23;a.other.rotation.z=-.62-Math.sin(beat*1.5)*.18;
-   a.legs[0].rotation.x=Math.max(0,switcher)*.86+Math.sin(beat*2)*.10;
-   a.legs[1].rotation.x=Math.max(0,-switcher)*.86-Math.sin(beat*2)*.10;
-   a.root.rotation.y=Math.PI+Math.sin(beat)*.20;
+   // Strong recognizable L pose: one arm across forehead, other raised diagonally; alternating kicks.
+   const kick=Math.sin(beat*1.5), switcher=Math.sin(beat*1.5);
+   a.body.position.y=.06+Math.abs(kick)*.13;
+   a.body.rotation.x=.04+Math.sin(beat*2)*.07;a.body.rotation.z=Math.sin(beat)*.12;
+   a.arm.rotation.x=-.20+Math.sin(beat)*.10;a.arm.rotation.z=-1.92+Math.sin(beat*1.5)*.12;
+   a.other.rotation.x=-.18-Math.sin(beat)*.10;a.other.rotation.z=1.18+Math.sin(beat*1.5)*.12;
+   a.legs[0].rotation.x=Math.max(0,switcher)*.92;
+   a.legs[1].rotation.x=Math.max(0,-switcher)*.92;
+   a.legs[0].rotation.z=.13+Math.max(0,switcher)*.16;
+   a.legs[1].rotation.z=-.13-Math.max(0,-switcher)*.16;
+   a.root.rotation.y=Math.PI+Math.sin(beat)*.13;
   }else{
-   // BAD challenge: sharp chest pops, arm hits, wide stance, knee hops and side kicks.
-   const phase=((beat%(Math.PI*2))+Math.PI*2)%(Math.PI*2), side=Math.sin(beat), snap=Math.sin(beat*2.4);
-   a.body.position.y=.13+Math.max(0,Math.sin(beat*2.1))*.22;
-   a.body.rotation.x=-.12+Math.sin(beat*2.4)*.19;a.body.rotation.z=side*.24;
-   a.arm.rotation.x=-1.15+snap*.58;a.arm.rotation.z=.65+side*.38;
-   a.other.rotation.x=-1.25-snap*.62;a.other.rotation.z=-.65-side*.38;
-   a.legs[0].rotation.x=Math.max(0,side)*.72+Math.sin(beat*2.3)*.22;
-   a.legs[1].rotation.x=Math.max(0,-side)*.72-Math.sin(beat*2.3)*.22;
-   a.legs[0].rotation.z=.12+side*.20;a.legs[1].rotation.z=-.12-side*.20;
-   a.root.rotation.y=Math.PI+side*.24;
+   // BAD dance: alternating arm punches/pumps, shoulder bounce, side-to-side step and kicks.
+   const punch=Math.sin(beat*2), kick=Math.sin(beat*1.3);
+   a.body.position.y=.045+Math.max(0,Math.sin(beat*2))*.10;
+   a.body.rotation.x=-.08+Math.sin(beat*2)*.10;a.body.rotation.z=side*.19;
+   a.arm.rotation.x=-.35+punch*.20;a.arm.rotation.z=-.75+side*.60;
+   a.other.rotation.x=-.35-punch*.20;a.other.rotation.z=.75-side*.60;
+   a.legs[0].rotation.x=Math.max(0,kick)*.75;
+   a.legs[1].rotation.x=Math.max(0,-kick)*.75;
+   a.legs[0].rotation.z=.10+side*.18;a.legs[1].rotation.z=-.10-side*.18;
+   a.root.rotation.y=Math.PI+side*.20;
   }
  }
  const flying=action==='win'&&age<1190&&!podium;a.fishModel.position.set(.54+.31*Math.sin(age*.0033),.23+Math.sin(clamp(age/1190,0,1)*Math.PI)*2.35,-1.15+age*.00046);let flap=0;if(flying)for(const [d,v] of tailBeats){const lag=(age-d*1000)*.001;if(lag>=0&&lag<.115)flap+=Math.sin(lag*61)*Math.exp(-lag*18)*v;}
