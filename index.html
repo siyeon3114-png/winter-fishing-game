@@ -532,11 +532,14 @@ function skeleton(slot=0){const root=group(), body=group(root), arm=group(body,.
    part(a,'softBall','coat',0,-.075,-.015,.112,.167,.112);
    part(a,'softBall','fur',0,-.179,-.031,.104,.050,.105);
    part(a,'softBall','leather',0,-.229,-.041,.094,.087,.091);
-     // Mitten palm plus clearly separated upright index and sideways thumb (L silhouette).
-   part(a,'softBall','leather',0,-.292,-.052,.092,.088,.094);
-   part(a,'softBall','leather',0,-.355,-.052,.034,.118,.040);
-   part(a,'softBall','leather',.066,-.292,-.071,.105,.036,.042,0,0,.34);
-   part(a,'sphere','leather',-.068,-.221,-.09,.041,.045,.050);
+     // Hand silhouette: one long index finger + a perpendicular thumb.
+   // Keep the other fingers visibly curled into the palm so it cannot read as an obscene gesture.
+   part(a,'softBall','leather',0,-.292,-.066,.094,.092,.090); // palm
+   part(a,'softBall','leather',0,-.365,-.075,.034,.132,.035); // index finger
+   part(a,'softBall','leather',.080,-.294,-.092,.112,.038,.036,0,0,.10); // thumb, sideways
+   part(a,'softBall','leather',-.036,-.251,-.091,.036,.034,.032); // curled finger
+   part(a,'softBall','leather',-.005,-.247,-.097,.036,.034,.032);
+   part(a,'softBall','leather',.031,-.250,-.094,.036,.034,.032);
  }
  for(const l of legs){
    part(l,'artBoot','boots',0,-.168,-.026,.139,.135,.172);
@@ -577,20 +580,21 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
    // Alternate outward kicks and side-to-side hops while the forehead gesture stays in place.
    // Match the reference: L hand pressed to forehead, other hand on hip,
    // one leg planted while the opposite leg kicks out sideways; alternate rhythmically.
-   const kick=Math.sin(beat*1.65), sway=Math.sin(beat*1.65), phase=Math.cos(beat*1.65);
-   a.body.position.y=.035+Math.abs(kick)*.085;
-   a.body.rotation.x=.015;a.body.rotation.z=-sway*.13;
-   // Keep right arm attached at shoulder and angle it up/in toward forehead.
-   a.arm.position.set(.32,.77,-.10);a.arm.rotation.x=-.10;a.arm.rotation.z=2.48+sway*.025;
-   a.other.position.set(-.30,.68,-.12);a.other.rotation.x=-.05;a.other.rotation.z=-1.10+sway*.04;
-   a.head.rotation.z=-sway*.035;
-   // Alternate a high side kick and a small supporting-leg hop; lateral foot spread is visible.
-   a.legs[0].rotation.x=.10+Math.max(0,kick)*.48;
-   a.legs[1].rotation.x=.10+Math.max(0,-kick)*.48;
-   a.legs[0].rotation.z=.12+Math.max(0,kick)*.72;
-   a.legs[1].rotation.z=-.12-Math.max(0,-kick)*.72;
-   a.root.position.x=podium[0]+sway*.045;
-   a.root.rotation.y=Math.PI+sway*.035;
+   const kick=Math.sin(beat*1.9), sway=Math.sin(beat*1.9);
+   a.body.position.y=.025+Math.abs(kick)*.055;
+   a.body.rotation.x=.015;a.body.rotation.z=-sway*.10;
+   // The right elbow bends inward; the hand is at the forehead, not reaching sideways.
+   a.arm.position.set(.19,.91,-.20);a.arm.rotation.x=-.04;a.arm.rotation.z=2.70+sway*.018;
+   // Left hand rests at the hip.
+   a.other.position.set(-.28,.57,-.12);a.other.rotation.x=-.08;a.other.rotation.z=-1.22+sway*.035;
+   a.head.rotation.z=-sway*.025;
+   // Clearly alternating sideways kicks: foot flares away from the body, then switches.
+   a.legs[0].rotation.x=.06+Math.max(0,kick)*.20;
+   a.legs[1].rotation.x=.06+Math.max(0,-kick)*.20;
+   a.legs[0].rotation.z=.08+Math.max(0,kick)*.92;
+   a.legs[1].rotation.z=-.08-Math.max(0,-kick)*.92;
+   a.root.position.x=podium[0]+sway*.075;
+   a.root.rotation.y=Math.PI+sway*.045;
   }else{
    a.arm.position.set(.32,.76,-.03);a.other.position.set(-.32,.76,-.03);
    // BAD challenge: pronounced shoulder hits, crossed punches and alternating side steps.
