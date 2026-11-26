@@ -416,14 +416,18 @@ function makeMaze(){const s=mazeWorld=new T.Scene();sky(s);makeGround(s);const p
  if(i===2){draw(o,P.bucket,M.bucket,0,-.08,0,.30,.46,.3);draw(o,P.cyl,M.ink,0,.155,0,.272,.023,.272);draw(o,P.torus,M.gold,0,.13,0,.35,.35,.35);}
  });const [x,z]=exitPos;mazeExit=group(s,x,0,z);
  // A clearly visible freestanding glowing doorway (not a tunnel): upright luminous panel and thick frame.
- draw(mazeExit,P.box,M.portalFrame,-1.18,1.25,0,.20,2.55,.24);
- draw(mazeExit,P.box,M.portalFrame,1.18,1.25,0,.20,2.55,.24);
- draw(mazeExit,P.box,M.portalFrame,0,2.53,0,2.55,.22,.24);
- draw(mazeExit,P.box,M.portalFrame,0,.10,0,2.55,.20,.24);
- const glow=draw(mazeExit,P.plane,M.portalGlow,0,1.31,-.135,2.05,2.30,1);glow.renderOrder=3;
- const inner=draw(mazeExit,P.plane,M.portalInner,0,1.31,-.15,1.78,2.06,1);inner.renderOrder=4;
- for(let side of [-1,1]){draw(mazeExit,P.sphere,M.portalSpark,side*1.23,2.55,-.18,.18,.18,.18);draw(mazeExit,P.sphere,M.portalSpark,side*1.23,.06,-.18,.15,.15,.15);}
- draw(mazeExit,P.box,M.portalFrame,0,2.78,0,2.80,.16,.30);
+ // Neon cyan doorway with a bright solid luminous panel; visible from both sides.
+ draw(mazeExit,P.box,M.portalFrame,-1.18,1.32,0,.23,2.60,.32);
+ draw(mazeExit,P.box,M.portalFrame,1.18,1.32,0,.23,2.60,.32);
+ draw(mazeExit,P.box,M.portalFrame,0,2.62,0,2.58,.23,.32);
+ draw(mazeExit,P.box,M.portalFrame,0,.06,0,2.58,.20,.32);
+ const outer=draw(mazeExit,P.plane,M.portalGlow,0,1.34,-.20,2.32,2.45,1);outer.renderOrder=5;
+ const inner=draw(mazeExit,P.plane,M.portalInner,0,1.34,-.23,2.00,2.18,1);inner.renderOrder=6;
+ // Bright glowing vertical side strips and a crown to make the portal read as a door.
+ for(let side of [-1,1])draw(mazeExit,P.box,M.portalSpark,side*1.02,1.34,-.26,.075,2.12,.06);
+ draw(mazeExit,P.box,M.portalSpark,0,2.40,-.26,2.10,.075,.06);
+ draw(mazeExit,P.sphere,M.portalSpark,-1.20,2.68,-.20,.20,.20,.20);
+ draw(mazeExit,P.sphere,M.portalSpark,1.20,2.68,-.20,.20,.20,.20);
 }
 function label3D(parent,text,x,y,z,w,h){const c=document.createElement('canvas');c.width=384;c.height=96;const ctx=c.getContext('2d');ctx.textAlign='center';ctx.textBaseline='middle';const paint=()=>{ctx.clearRect(0,0,384,96);ctx.font='700 63px 축제 라운드, sans-serif';ctx.lineJoin='round';ctx.lineWidth=5;ctx.strokeStyle='#23455f';ctx.strokeText(text,192,50,370);ctx.fillStyle='#fffbda';ctx.fillText(text,192,50,370);};paint();const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;document.fonts?.load('700 63px 축제 라운드',text).then(()=>{paint();tx.needsUpdate=true;}).catch(()=>{});const mat=new T.MeshBasicMaterial({map:tx,transparent:true,side:T.DoubleSide,depthWrite:false});draw(parent,P.plane,mat,x,y,z,w,h,1);}
 // 걷는 얼음낚시 축제장: 결정적 월드 생성 + 구멍이 뚫린 얼음 메시.
@@ -498,7 +502,7 @@ function makeLake(){const s=lakeWorld=new T.Scene();sky(s);lakeBlockers.length=0
  const bite=group(s);draw(bite,P.torus,M.bite,0,.11,0,.41,.41,.41).rotation.x=-Math.PI/2;draw(bite,P.sphere,M.gold,0,1.13,0,.21,.21,.21);draw(bite,P.cyl,M.dark,0,1.18,.185,.025,.18,.025);draw(bite,P.sphere,M.dark,0,1.03,.185,.031,.031,.031);lakeFX=[marker,bite]; const podium=group(s,3.25,0,0);podium.name='podium';draw(podium,P.box,M.ice,0,.06,0,6.25,.18,2.15);draw(podium,P.box,M.gold,0,.17,0,6.25,.055,2.15);draw(podium,P.box,M.snow,0,.23,0,6.1,.08,2.02);for(const [i,h,m] of [[-1,.62,M.rim],[0,.95,M.gold],[1,.42,M.coral]]){draw(podium,P.cyl,m,i*1.54,h/2+.25,0,.69,h,.69);draw(podium,P.disc,M.snow,i*1.54,h+.259,0,.65,1,.65);label3D(podium,i===0?'1':i===-1?'2':'3',i*1.54,h*.84,.697,.47,.29);}draw(podium,P.box,M.gold,0,2.15,-.95,5.2,.13,.12);podium.visible=false;
 }
 function initPalette(){P.sphere=new T.SphereGeometry(1,12,8);P.sky=new T.SphereGeometry(1,24,12);P.box=new T.BoxGeometry(1,1,1);P.cyl=new T.CylinderGeometry(1,1,1,12);P.bucket=new T.CylinderGeometry(1,.73,1,12);P.pine=new T.ConeGeometry(1,1,10);P.mount=new T.ConeGeometry(1,1,6);P.torus=new T.TorusGeometry(1,.068,5,18);P.plane=new T.PlaneGeometry(1,1);P.disc=new T.CircleGeometry(1,24);P.disc.rotateX(-Math.PI/2);P.arrow=arrowGeo();
- const palette={cloud:0xfffafa,mountain:0x84a8c4,snow:0xf6fbff,ground:0xe5f4fb,trunk:0x895555,pine:0x327976,pine2:0x468e86,path:0xc5e4f1,iceWall:0xa2cadf,rim:0xb0e5f1,white:0xf5f6ee,coral:0xd86472,worm:0xed719d,bucket:0x5fb8a5,ink:0x2c617a,dark:0x213146,shore:0xfcfdff,ice:0x80c4dc,seat:0xb9e1ec,hole:0x1d506a,face:0xf8d5b0,cheek:0xf4a491,boots:0x384861,scarf:0xfff0c5,rod:0x5a3e46,line:0xf0fbff};for(const k of Object.keys(palette))M[k]=material(palette[k]);M.ice.roughness=.31;M.ice.metalness=.16;M.gold=material(0xffc66d,{emissive:0x7d4113,emissiveIntensity:.22});M.arrow=material(0x267cae,{emissive:0x14628d,emissiveIntensity:.36,side:T.DoubleSide});M.shadow=new T.MeshBasicMaterial({color:0x537d9f,transparent:true,opacity:.15,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});M.itemGlow=new T.MeshBasicMaterial({color:0xffe9a6,transparent:true,opacity:.17,depthWrite:false});M.exit=new T.MeshBasicMaterial({color:0xffdc7b,transparent:true,opacity:.66,depthWrite:false});M.portalFrame=new T.MeshBasicMaterial({color:0xffd45c});M.portalGlow=new T.MeshBasicMaterial({color:0x79e8ff,transparent:true,opacity:.28,side:T.DoubleSide,depthWrite:false});M.portalInner=new T.MeshBasicMaterial({color:0xd8fbff,transparent:true,opacity:.80,side:T.DoubleSide,depthWrite:false});M.portalSpark=new T.MeshBasicMaterial({color:0xffffff});M.selected=new T.MeshBasicMaterial({color:0xffd46c});M.bite=new T.MeshBasicMaterial({color:0xffc954});M.icePatch=material(0xa4d8e8,{transparent:true,opacity:.37,depthWrite:false});M.glint=new T.MeshBasicMaterial({color:0xe5faff,transparent:true,opacity:.53,depthWrite:false});M.underlight=new T.MeshBasicMaterial({color:0xadecf4,transparent:true,opacity:.25,depthWrite:false});M.coats=colors.map(([,c])=>material(c));M.fish=fish.map(f=>material(f.color,{roughness:.42,metalness:.14}));}
+ const palette={cloud:0xfffafa,mountain:0x84a8c4,snow:0xf6fbff,ground:0xe5f4fb,trunk:0x895555,pine:0x327976,pine2:0x468e86,path:0xc5e4f1,iceWall:0xa2cadf,rim:0xb0e5f1,white:0xf5f6ee,coral:0xd86472,worm:0xed719d,bucket:0x5fb8a5,ink:0x2c617a,dark:0x213146,shore:0xfcfdff,ice:0x80c4dc,seat:0xb9e1ec,hole:0x1d506a,face:0xf8d5b0,cheek:0xf4a491,boots:0x384861,scarf:0xfff0c5,rod:0x5a3e46,line:0xf0fbff};for(const k of Object.keys(palette))M[k]=material(palette[k]);M.ice.roughness=.31;M.ice.metalness=.16;M.gold=material(0xffc66d,{emissive:0x7d4113,emissiveIntensity:.22});M.arrow=material(0x267cae,{emissive:0x14628d,emissiveIntensity:.36,side:T.DoubleSide});M.shadow=new T.MeshBasicMaterial({color:0x537d9f,transparent:true,opacity:.15,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1});M.itemGlow=new T.MeshBasicMaterial({color:0xffe9a6,transparent:true,opacity:.17,depthWrite:false});M.exit=new T.MeshBasicMaterial({color:0xffdc7b,transparent:true,opacity:.66,depthWrite:false});M.portalFrame=new T.MeshBasicMaterial({color:0x00d9ff});M.portalGlow=new T.MeshBasicMaterial({color:0x00cfff,transparent:true,opacity:.72,side:T.DoubleSide,depthWrite:false,blending:T.AdditiveBlending});M.portalInner=new T.MeshBasicMaterial({color:0x7ff4ff,transparent:true,opacity:.92,side:T.DoubleSide,depthWrite:false});M.portalSpark=new T.MeshBasicMaterial({color:0xffffff});M.selected=new T.MeshBasicMaterial({color:0xffd46c});M.bite=new T.MeshBasicMaterial({color:0xffc954});M.icePatch=material(0xa4d8e8,{transparent:true,opacity:.37,depthWrite:false});M.glint=new T.MeshBasicMaterial({color:0xe5faff,transparent:true,opacity:.53,depthWrite:false});M.underlight=new T.MeshBasicMaterial({color:0xadecf4,transparent:true,opacity:.25,depthWrite:false});M.coats=colors.map(([,c])=>material(c));M.fish=fish.map(f=>material(f.color,{roughness:.42,metalness:.14}));}
 const animals=[['cat','oat'],['bunny','lilac'],['bear','toffee'],['fox','ginger'],['cat','mist'],['bear','mocha']];
 function villageMaterials(){const shades={oat:0xeacba4,lilac:0xb2a6da,toffee:0xbc8559,ginger:0xe9945d,mist:0xa4bfda,mocha:0x967168,creamFur:0xffeed9,earPink:0xec9eab,eyeInk:0x382638,blush:0xef9c9d,stitch:0xffdfb4};for(const k of Object.keys(shades))M[k]=material(shades[k],{roughness:k==='eyeInk'?.39:.82});}
 function skeleton(slot=0){const root=group(), body=group(root), arm=group(body,.32,.76,-.03), other=group(body,-.32,.76,-.03), legs=[group(body,-.16,.32,0),group(body,.16,.32,0)], fishModel=group(root), p=[];const part=(node,g,m,x,y,z,sx,sy,sz,rx=0,ry=0,rz=0)=>{const ob=new T.Object3D();node.add(ob);ob.position.set(x,y,z);ob.scale.set(sx,sy,sz);ob.rotation.set(rx,ry,rz);p.push({g,m,ob});return ob;};
@@ -541,14 +545,9 @@ function skeleton(slot=0){const root=group(), body=group(root), arm=group(body,.
    part(a,'softBall','coat',0,-.075,-.015,.112,.167,.112);
    part(a,'softBall','fur',0,-.179,-.031,.104,.050,.105);
    part(a,'softBall','leather',0,-.229,-.041,.094,.087,.091);
-     // Hand silhouette: one long index finger + a perpendicular thumb.
-   // Keep the other fingers visibly curled into the palm so it cannot read as an obscene gesture.
-   part(a,'softBall','leather',0,-.292,-.066,.094,.092,.090); // palm
-   part(a,'softBall','leather',0,-.365,-.075,.034,.132,.035); // index finger
-   part(a,'softBall','leather',.080,-.294,-.092,.112,.038,.036,0,0,.10); // thumb, sideways
-   part(a,'softBall','leather',-.036,-.251,-.091,.036,.034,.032); // curled finger
-   part(a,'softBall','leather',-.005,-.247,-.097,.036,.034,.032);
-   part(a,'softBall','leather',.031,-.250,-.094,.036,.034,.032);
+     // Simple rounded mitten hand: no gesture or separated finger shapes.
+   part(a,'softBall','leather',0,-.292,-.052,.102,.092,.096);
+   part(a,'softBall','leather',.067,-.274,-.072,.060,.047,.055,0,0,.35);
  }
  for(const l of legs){
    part(l,'artBoot','boots',0,-.168,-.026,.139,.135,.172);
@@ -585,25 +584,17 @@ function avatar(slot,record,t,podium=null){const a=avatarModels[slot],local=slot
  if(podium){
   const beat=danceBeat, side=Math.sin(beat);
   if(podiumWinner){
-   // Fortnite TAKE THE L: RIGHT hand's L is pressed to forehead; left hand rests at waist.
-   // Alternate outward kicks and side-to-side hops while the forehead gesture stays in place.
-   // Match the reference: L hand pressed to forehead, other hand on hip,
-   // one leg planted while the opposite leg kicks out sideways; alternate rhythmically.
-   const kick=Math.sin(beat*1.9), sway=Math.sin(beat*1.9);
-   a.body.position.y=.025+Math.abs(kick)*.055;
+   // Winner does a simple cheerful sway-and-bounce. No hand signs or complex footwork.
+   const sway=Math.sin(beat*1.45), bounce=Math.max(0,Math.sin(beat*2.9));
+   a.body.position.y=.035+bounce*.075;
    a.body.rotation.x=.015;a.body.rotation.z=-sway*.10;
-   // The right elbow bends inward; the hand is at the forehead, not reaching sideways.
-   a.arm.position.set(.19,.91,-.20);a.arm.rotation.x=-.04;a.arm.rotation.z=2.70; // L hand fixed to forehead
-   // Other arm stays completely still at the waist throughout the dance.
-   a.other.position.set(-.28,.57,-.12);a.other.rotation.x=0;a.other.rotation.z=-1.22;
+   a.arm.position.set(.32,.76,-.03);a.arm.rotation.x=-.08+sway*.10;a.arm.rotation.z=-.22+sway*.22;
+   a.other.position.set(-.32,.76,-.03);a.other.rotation.x=-.08-sway*.10;a.other.rotation.z=.22-sway*.22;
    a.head.rotation.z=-sway*.025;
-   // Clearly alternating sideways kicks: foot flares away from the body, then switches.
-   a.legs[0].rotation.x=.06+Math.max(0,kick)*.20;
-   a.legs[1].rotation.x=.06+Math.max(0,-kick)*.20;
-   a.legs[0].rotation.z=.08+Math.max(0,kick)*.92;
-   a.legs[1].rotation.z=-.08-Math.max(0,-kick)*.92;
-   a.root.position.x=podium[0]+sway*.075;
-   a.root.rotation.y=Math.PI+sway*.045;
+   a.legs[0].rotation.x=.05+bounce*.20;a.legs[1].rotation.x=.05+bounce*.20;
+   a.legs[0].rotation.z=.08+sway*.12;a.legs[1].rotation.z=-.08-sway*.12;
+   a.root.position.x=podium[0]+sway*.045;
+   a.root.rotation.y=Math.PI+sway*.035;
   }else{
    a.arm.position.set(.32,.76,-.03);a.other.position.set(-.32,.76,-.03);
    // BAD challenge: pronounced shoulder hits, crossed punches and alternating side steps.
@@ -639,7 +630,7 @@ function renderLake(t,dt){if(lakeWorld.userData.water)lakeWorld.userData.water.v
  }for(const p of avatarPools.values()){p.o.count=p.used;if(p.used)p.o.instanceMatrix.needsUpdate=true;}}
 function resize3D(){if(!renderer)return;const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,(navigator.maxTouchPoints>0)?1.28:1.5,Math.sqrt(1800000/(w*h))));renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=(w<h&&w<650)?58:50;camera.updateProjectionMatrix();}
 function animation(t){requestAnimationFrame(animation);const dt=Math.min(.055,(t-(gfxLast||t))/1000);gfxLast=t;snowMoving=false;if(!document.hidden&&!$('audioDialog').open){if(mode==='maze')moveMaze(dt,t);if(mode==='fishing')tickLake(dt,t);}if(mode==='fishing')tickFish(t);if(!snowMoving)quietSnow();if(!renderer||document.hidden)return;const hz=mode==='menu'||mode==='lobby'||mode==='results'?30:60;if(t-frame<1000/hz-1)return;const rd=Math.min(.07,(t-(frame||t))/1000);frame=t;const s=mode==='maze'?mazeWorld:lakeWorld;
- if(mode==='maze'){const bob=reduced?0:Math.sin(player.walk)*.043;eye.position.set(player.x,1.55+bob,player.z);eye.lookAt(player.x+Math.sin(player.yaw)*8,1.44+bob,player.z-Math.cos(player.yaw)*8);mazePickups.forEach((p,i)=>{p.visible=!(inv&(1<<i));p.position.y=1.02+(reduced?0:Math.sin(t*.0026+i)*.15);p.rotation.y=t*.0012+i;});if(mazeExit){const pulse=.5+.5*Math.sin(t*.004);mazeExit.children[4].material.opacity=.18+pulse*.28;mazeExit.children[5].material.opacity=.58+pulse*.34;mazeExit.children[4].scale.set(2.05+pulse*.18,2.30+pulse*.16,1);mazeExit.children[5].scale.set(1.78+pulse*.08,2.06+pulse*.08,1);}}
+ if(mode==='maze'){const bob=reduced?0:Math.sin(player.walk)*.043;eye.position.set(player.x,1.55+bob,player.z);eye.lookAt(player.x+Math.sin(player.yaw)*8,1.44+bob,player.z-Math.cos(player.yaw)*8);mazePickups.forEach((p,i)=>{p.visible=!(inv&(1<<i));p.position.y=1.02+(reduced?0:Math.sin(t*.0026+i)*.15);p.rotation.y=t*.0012+i;});if(mazeExit){const pulse=.5+.5*Math.sin(t*.004);mazeExit.children[4].material.opacity=.45+pulse*.42;mazeExit.children[5].material.opacity=.72+pulse*.25;mazeExit.children[4].scale.set(2.32+pulse*.28,2.45+pulse*.22,1);mazeExit.children[5].scale.set(2.00+pulse*.12,2.18+pulse*.12,1);mazeExit.children[0].material.color.setHex(pulse>.5?0x00f5ff:0x45bfff);mazeExit.children[1].material.color.setHex(pulse>.5?0x00f5ff:0x45bfff);mazeExit.children[2].material.color.setHex(pulse>.5?0x00f5ff:0x45bfff);mazeExit.children[3].material.color.setHex(pulse>.5?0x00f5ff:0x45bfff);}}
  else renderLake(t,rd);camera.position.copy(eye.position);camera.quaternion.copy(eye.quaternion);animateSnow(s,rd,t);renderer.render(s,camera);}
 async function loadThree(){if(window.THREE)return window.THREE;for(const src of ['https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js','https://unpkg.com/three@0.159.0/build/three.min.js']){try{await new Promise((resolve,reject)=>{const tag=document.createElement('script'),timeout=setTimeout(()=>{tag.remove();reject(Error());},6500);tag.src=src;tag.onload=()=>{clearTimeout(timeout);resolve();};tag.onerror=()=>{clearTimeout(timeout);tag.remove();reject(Error());};document.head.append(tag);});if(window.THREE)return window.THREE;}catch{}}throw Error('Three.js');}
 async function start3D(){if(gameReady)return;gfxError='';$('loading3d').hidden=false;updateUI(true);try{T=await loadThree();renderer=new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.domElement.addEventListener('click',festivalClick);renderer.setClearColor(0xb6deee);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();showToast('3D 화면이 잠시 멈췄어요. 복구를 기다려 주세요.',4500);});$('stage').replaceChildren(renderer.domElement);camera=new T.PerspectiveCamera(50,1,.075,215);eye=new T.Object3D();eye.lookAt=function(...args){camera.position.copy(this.position);camera.lookAt(...args);this.quaternion.copy(camera.quaternion);};vecA=new T.Vector3();vecB=new T.Vector3();up=new T.Vector3(0,1,0);segment=new T.Object3D();initPalette();villageMaterials();artWinterPalette();makeMaze();makeLake();avatarModels=Array.from({length:30},(_,i)=>skeleton(i));resize3D();gameReady=true;}catch(e){if(renderer){renderer.dispose();renderer=null;}$('stage').replaceChildren();gfxError=e?.message==='Three.js'?'3D 파일을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 불러와 주세요.':'3D 화면을 켜지 못했어요. WebGL을 지원하는 최신 Safari 또는 Chrome에서 열어 주세요.';}finally{$('loading3d').hidden=true;updateUI(true);}}
