@@ -684,7 +684,7 @@ function rules(){const count=['c0','c1','c2'];const checks={uid:"newData.isStrin
 $('rulesText').textContent=JSON.stringify(rules(),null,2);
 function cloudParam(){try{const h=new URLSearchParams(location.hash.slice(1));const s=h.get('firebase');if(s){const d=decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));return parseConfig(d);}const saved=storage.get(cfgStore);return saved?parseConfig(saved):null;}catch{return null;}}
 const BUILT_IN_FIREBASE_CONFIG={"apiKey":"AIzaSyBj8lbJt7CEG-qR5bUEPAUi2i3wId-WLas","authDomain":"winter-fishing-game.firebaseapp.com","databaseURL":"https://winter-fishing-game-default-rtdb.firebaseio.com","projectId":"winter-fishing-game","appId":"1:459347704410:web:f3db86a845862c2e7ab663","storageBucket":"winter-fishing-game.firebasestorage.app","messagingSenderId":"459347704410","measurementId":"G-M43JJBZ6HL"};
-cloudConf=cloudParam()||parseConfig(JSON.stringify(BUILT_IN_FIREBASE_CONFIG));
+cloudConf=parseConfig(JSON.stringify(BUILT_IN_FIREBASE_CONFIG));
 function savedCloud(c){cloudConf=c;cloudPromise=null;storage.set(cfgStore,c?JSON.stringify(c):null);if(!c&&location.hash.startsWith('#firebase=')){try{history.replaceState(null,'',location.pathname+location.search);}catch{location.hash='';}}}
 function openSettings(){if(room)return;$('config').value=cloudConf?JSON.stringify(cloudConf,null,2):'';$('setupMsg').textContent='';$('copyFallback').hidden=true;$('setup').showModal();resetInput();}
 $('settings').onclick=openSettings;$('closeSetup').onclick=()=>$('setup').close();
